@@ -1,0 +1,58 @@
+
+
+h1 {
+    font-size: 40px;
+  }
+  
+  h3 {
+    font-size: 25px;
+  }
+
+  a:link {
+    color: blue;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  a:visited {
+    color: blue;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  a:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  
+  
+.div1{
+      float: left;
+      padding-left: 210px;
+      font-size: 18px;
+  }
+
+.div2{
+    float: right;
+    padding-right: 210px;
+    font-size: 18px;
+}
+
+.div4{
+    clear: left;
+}
+
+ul {
+    display: table;
+    padding-left: 250px;
+    font-size: 18px;
+    }
+
+
