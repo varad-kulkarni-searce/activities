@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+    <title>Invoice Application</title>
+</head>
+
+<body style="background-color: rgb(151, 128, 160);">
+
+    <div class="container bg-transparent p-5 pb-3" id="capture" style="padding: 10px; background: #f5da55">
+        <div class="bg-white mx-5" id="invoicemain">
+
+            <div class="row px-5 pt-5">
+                <div class="col-9">
+                    <h4 class="pt-2 pb-4"><span
+                            style="border-radius: 4px; padding: 2px 8px 4px; background-color: rgb(247, 43, 43); color: #fff;">
+                            DUE</span>
+                        <span style="padding: 0px 10px; font-weight: bold;">Invoice</span>
+                    </h4>
+                    <p input type="text" class="border border-secondary pt-1 pb-1 pl-1">Thank you for your
+                        purchase.
+                        Timely
+                        payment will be
+                        appreciated. </p>
+                </div>
+                <div class="col-3 pt-1 mb-3" style="border: rgb(172, 169, 169) dashed;">
+                    <div class="text-center;"><img src="./assets/yourLogo.png" class="img-fluid" alt="Your Logo Here">
+                    </div>
+                </div>
+            </div>
+
+            <form>
+                <div class="row px-5 py-1">
+                    <div class="col-3">
+                        <label for="inputInvoiceNo">Invoice No</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">#</div>
+                            </div>
+                            <input type="text" class="form-control" id="inputInvoiceNo" placeholder="" value="#INV-694">
+                        </div>
+                    </div>
+
+                    <div class="col-9 d-flex justify-content-end pr-0">
+                        <div class="col-4">
+                            <label for="inputLanguage">Language</label>
+                            <div class="form-group bd-light">
+                                <select class="form-control">
+                                    <option>English (US)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6 pr-0">
+                            <label for="inputCurrency">Currency</label>
+                            <div class="form-group">
+                                <select class="form-control" onchange="currency(value)">
+                                    <option value="INR">Indian Rupee - INR</option>
+                                    <option value="GBP">British Pound - GBP</option>
+                                    <option value="USD">U.S. dollar - USD</option>
+                                    <option value="AUD"> Australian dollars - AUD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <hr class="mx-5">
+
+                <div class="row mx-5 pt-4">
+                    <div class="col-lg-5">
+                        <div class="row pb-1">
+                            <p><span class="font-weight-bold">From</span>
+                                <br>
+                                Your Business Inc,
+                                <br>
+                                Your Address
+                                <br>
+                                City & ZIP, Your Country
+                            </p>
+                        </div>
+
+                        <div class="row pt-1">
+                            <p class="font-weight-bold mb-1">To</p>
+                            <textarea class="form-control" style="background-color: #e9ecef;"
+                                id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-4 pr-0">
+
+                        <label for="inputDate">Date</label>
+                        <div class="input-group date" id="datepicker">
+                            <input type="text" class="form-control">
+                            <span class="input-group-append">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                        <br>
+                        <label for="inputEmail4">Invoice Due</label>
+                        <div class="form-group ">
+                            <select class="form-control">
+                                <option>After 5 Days</option>
+                                <option>After 10 Days</option>
+                                <option>After 15 Days</option>
+                                <option>After 20 Days</option>
+                                <option>After 30 Days</option>
+                            </select>
+                        </div>
+
+                        <label for="inputEmail4">Purchase Order Number</label>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="inlineFormInputGroupUsername" value="PQ-123">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <hr class="mx-5">
+
+            <form>
+                <div class="row mx-5">
+                    <table class="table table-borderless pb-0 mb-0" id="items">
+                        <thead class="pt-2 border-bottom">
+                            <tr>
+                                <th scope="col" class="col-7">Name</th>
+                                <th scope="col" class="text-right">Quantity</th>
+                                <th scope="col" class="text-right">Rate</th>
+                                <th scope="col" class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="item-row">
+                                <td>
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="itemName" rows="2"
+                                            placeholder="Items You Are Selling"></textarea>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control text-right" id="quantity"
+                                            oninput="Calculate();" value="00" required on>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control text-right" id="rate"
+                                            oninput="Calculate();" value="0.00" required>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <div class="row pb-4">
+                                            <div class="col-4 px-2 py-2" id="currSet3"></div>
+                                            <input type="text" class="form-control text-right col-8" id="amount"
+                                                value="" readonly>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-top" id="hiderow">
+                                <td colspan="4"><a class="btn btn-secondary" id="newLine" onclick="addLine()">New
+                                        Line</a></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mx-5 mt-0">
+                    <div class="col-6"></div>
+
+                    <div class="col-6 mr-0">
+                        <div class="row">
+                            <div class="col-6">Sub Total</div>
+                            <div class="col-6"><input type="text" class="from-control border-0 text-right" id="subtotal"
+                                    value="" readonly></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-7 pr-0">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Value Added Tax (%)</div>
+                                    </div>
+                                    <input type="text" class="form-control" id="taxPercentage" value="00"
+                                        oninput="Calculate()" required>
+                                </div>
+                            </div>
+                            <div class="col-5 text-right"><span id="taxAmount"></span></div>
+                        </div>
+                        <hr>
+                        <div class="row pb-3">
+                            <div class="col-6">Total (<span id="currSet1"></span>)</div>
+                            <div class="col-6 text-right"><span id="total"></span></div>
+                        </div>
+                        <div class="row mb-3" style="border: 3px solid #dc3545;">
+                            <a class="col-4 btn btn-danger rounded-0 border-0">Total Due</a>
+                            <div class="col-5 px-3 p-2" id="currSet2"></div>
+                            <div class="col-3 text-right px-3 p-2"><span id="finaltotal"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!--<a class="btn btn-sm btn-secondary float-right mr-1 d-print-none" href="#"
+                onclick="javascript:window.print();" data-abc="true">
+                <i class="fa fa-print"></i> Print</a>-->
+        </div>
+        <div class="text-center pt-3"><a class="btn btn-warning" id="downloadButton" onclick="makePDF()">PDF</a></div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#datepicker').datepicker();
+        });
+
+        var subtotal = 0;
+        var originalAmount = 0;
+        var curr = 'INR'; //chosen currency
+        currency('INR');
+        function currency(newCurr) { //updates chosen currency
+            curr = newCurr;
+            document.getElementById("currSet1").innerHTML = curr;
+            document.getElementById("currSet2").innerHTML = curr;
+            document.getElementById("currSet3").innerHTML = curr;
+        }
+
+        Calculate(); // calculate amount of that item
+        function Calculate() {
+            var quantity = document.getElementById('quantity').value;
+            var rate = document.getElementById('rate').value;
+            var taxPercentage = document.getElementById('taxPercentage').value;
+            //console.log("taxPercentage:", taxPercentage);
+            var taxDecimal = taxPercentage / 100;
+            console.log("taxDecimal:", taxDecimal);
+            var amount = quantity * rate;
+            var finalAmount = amount.toFixed(2);
+            // console.log("originalAmount: ", originalAmount);            
+            document.getElementById('amount').value = finalAmount;
+            var subtotal = amount;
+            var finalSubtotal = subtotal.toFixed(2);
+            var totalTaxAmount = finalSubtotal * taxDecimal;
+            var totalAmount = Number(finalSubtotal) + Number(totalTaxAmount);
+            document.getElementById('subtotal').value = finalSubtotal;
+            document.getElementById("taxAmount").innerHTML = totalTaxAmount;
+            document.getElementById("total").innerHTML = totalAmount;
+            document.getElementById("finaltotal").innerHTML = totalAmount;
+        }
+
+
+        function addLine() { //adds new line for to add items
+            var table = document.getElementById("items");
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            cell1.innerHTML = '<div class="form-group"><textarea class="form-control" id="itemName" rows="2"></textarea></div> ';
+            cell2.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="quantity" value="0.00" required></div> ';
+            cell3.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="rate" onblur="Calculate();" value="0.00" required></div> ';
+            cell4.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="amount" value="" readonly></div> ';
+        }
+
+
+        window.html2canvas = html2canvas;
+        window.jsPDF = window.jspdf.jsPDF;
+        function makePDF() {
+            html2canvas(document.querySelector("#capture"), {
+
+                allowTaint: true,
+                useCORS: true,
+                scale: 1
+            }).then(canvas => {
+                var img = canvas.toDataURL("image/png");
+                var doc = new jsPDF();
+                doc.setFont('Aerial');
+                doc.getFontSize(11);
+                doc.addImage(img, 'PNG', 4, 8, 195, 250);
+                doc.save("Invoice");
+            });
+        }
+
+    </script>
+
+
+</body>
