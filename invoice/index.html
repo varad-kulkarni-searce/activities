@@ -55,7 +55,7 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text">#</div>
                             </div>
-                            <input type="text" class="form-control" id="inputInvoiceNo" placeholder="" value="#INV-694">
+                            <input type="text" class="form-control" id="inputInvoiceNo" placeholder="" value="INV-694">
                         </div>
                     </div>
 
@@ -73,9 +73,10 @@
                             <label for="inputCurrency">Currency</label>
                             <div class="form-group">
                                 <select class="form-control" onchange="currency(value)">
+                                    <option value="Select">Select Currency</option>
+                                    <option value="USD">U.S. dollar - USD</option>
                                     <option value="INR">Indian Rupee - INR</option>
                                     <option value="GBP">British Pound - GBP</option>
-                                    <option value="USD">U.S. dollar - USD</option>
                                     <option value="AUD"> Australian dollars - AUD</option>
                                 </select>
                             </div>
@@ -156,18 +157,22 @@
                                     <div class="form-group">
                                         <textarea class="form-control" id="itemName" rows="2"
                                             placeholder="Items You Are Selling"></textarea>
+                                        <div class="form-group pl-2 pt-1">
+                                            <button type="button" class="btn btn-secondary" id="delete"
+                                                onclick="deleteLine()">Delete</button>
+                                        </div>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
                                         <input type="text" class="form-control text-right" id="quantity"
-                                            oninput="Calculate();" value="00" required on>
+                                            onblur="Calculate();" value="00" required on>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
                                         <input type="text" class="form-control text-right" id="rate"
-                                            oninput="Calculate();" value="0.00" required>
+                                            onblur="Calculate();" value="0.00" required>
                                     </div>
                                 </td>
                                 <td>
@@ -206,7 +211,7 @@
                                         <div class="input-group-text">Value Added Tax (%)</div>
                                     </div>
                                     <input type="text" class="form-control" id="taxPercentage" value="00"
-                                        oninput="Calculate()" required>
+                                        onblur="Calculate()" required>
                                 </div>
                             </div>
                             <div class="col-5 text-right"><span id="taxAmount"></span></div>
@@ -237,32 +242,141 @@
         });
 
         var subtotal = 0;
-        var originalAmount = 0;
-        var curr = 'INR'; //chosen currency
-        currency('INR');
+        var currencyRate = 0;
+        //var originalAmount = 0;
+        var curr = ''; //chosen currency
+        const USD = {
+            INR: 76.5,
+            GBP: 0.73,
+            AUD: 1.37
+        };
+        const INR = {
+            USD: 0.013,
+            GBP: 0.009,
+            AUD: 0.018
+        };
+        const GBP = {
+            USD: 1.36,
+            INR: 101.5,
+            AUD: 1.87
+        };
+        const AUD = {
+            USD: 0.72,
+            INR: 54.17,
+            GBP: 0.53
+        };
+
+        currency('');
+
         function currency(newCurr) { //updates chosen currency
+            if (newCurr == "USD") {
+                currencyRate = 1;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "USD" && newCurr == "INR") {
+                currencyRate = USD.INR;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "USD" && newCurr == "GBP") {
+                currencyRate = USD.GBP;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "USD" && newCurr == "AUD") {
+                currencyRate = USD.AUD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (newCurr == "INR") {
+                currencyRate = 1;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "INR" && newCurr == "USD") {
+                currencyRate = INR.USD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "INR" && newCurr == "GBP") {
+                currencyRate = INR.GBP;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "INR" && newCurr == "AUD") {
+                currencyRate = INR.AUD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (newCurr == "GBP") {
+                currencyRate = 1;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "GBP" && newCurr == "USD") {
+                currencyRate = GBP.USD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "GBP" && newCurr == "INR") {
+                currencyRate = GBP.INR;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "GBP" && newCurr == "AUD") {
+                currencyRate = GBP.AUD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (newCurr == "AUD") {
+                currencyRate = 1;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "AUD" && newCurr == "USD") {
+                currencyRate = AUD.USD;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "AUD" && newCurr == "INR") {
+                currencyRate = AUD.INR;
+                console.log("currencyRate:", currencyRate);
+            }
+            else if (curr == "AUD" && newCurr == "GBP") {
+                currencyRate = AUD.GBP;
+                console.log("currencyRate:", currencyRate);
+            }
+            else {
+                currencyRate = 1;
+            }
+
             curr = newCurr;
-            document.getElementById("currSet1").innerHTML = curr;
-            document.getElementById("currSet2").innerHTML = curr;
-            document.getElementById("currSet3").innerHTML = curr;
+            if (newCurr == "Select") {
+                document.getElementById("currSet1").innerHTML = " ";
+                document.getElementById("currSet2").innerHTML = " ";
+                document.getElementById("currSet3").innerHTML = " ";
+            }
+            else {
+                document.getElementById("currSet1").innerHTML = curr;
+                document.getElementById("currSet2").innerHTML = curr;
+                document.getElementById("currSet3").innerHTML = curr;
+            }
+
+            Calculate(currencyRate);
         }
 
-        Calculate(); // calculate amount of that item
-        function Calculate() {
+
+
+        function Calculate(currencyRate) {
             var quantity = document.getElementById('quantity').value;
             var rate = document.getElementById('rate').value;
             var taxPercentage = document.getElementById('taxPercentage').value;
             //console.log("taxPercentage:", taxPercentage);
             var taxDecimal = taxPercentage / 100;
-            console.log("taxDecimal:", taxDecimal);
-            var amount = quantity * rate;
+            //console.log("taxDecimal:", taxDecimal);
+            if (isNaN(currencyRate)) {
+                currencyRate = 0;
+            }
+            console.log("currencyRate in Caluclate():", currencyRate);
+            var amount = quantity * rate * currencyRate;
             var finalAmount = amount.toFixed(2);
-            // console.log("originalAmount: ", originalAmount);            
+            if (isNaN(amount)) {
+                amount = 0;
+            }
             document.getElementById('amount').value = finalAmount;
-            var subtotal = amount;
+            subtotal = amount;
+
             var finalSubtotal = subtotal.toFixed(2);
             var totalTaxAmount = finalSubtotal * taxDecimal;
             var totalAmount = Number(finalSubtotal) + Number(totalTaxAmount);
+
             document.getElementById('subtotal').value = finalSubtotal;
             document.getElementById("taxAmount").innerHTML = totalTaxAmount;
             document.getElementById("total").innerHTML = totalAmount;
@@ -277,10 +391,14 @@
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
             var cell4 = row.insertCell(3);
-            cell1.innerHTML = '<div class="form-group"><textarea class="form-control" id="itemName" rows="2"></textarea></div> ';
-            cell2.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="quantity" value="0.00" required></div> ';
-            cell3.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="rate" onblur="Calculate();" value="0.00" required></div> ';
-            cell4.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="amount" value="" readonly></div> ';
+            cell1.innerHTML = '<div class="form-group"><textarea class="form-control" id="itemName" rows="2" placeholder="Items You Are Selling"></textarea><div class="form-group pl-2 pt-1"><button type="button" class="btn btn-secondary" id="delete" onclick="deleteLine()">Delete</button></div></div>';
+            cell2.innerHTML = '<div class="form-group"><input type ="text" class="form-control text-right" id="quantity" onblur="Calculate();" value="00" required on></div>';
+            cell3.innerHTML = '<div class="form-group"><input type="text" class="form-control text-right" id="rate" onblur = "Calculate();" value="0.00" required></div>';
+            cell4.innerHTML = '<div class="form-group"><div class="row pb-4"><div class="col-4 px-2 py-2" id="currSet3"></div><input type="text" class="form-control text-right col-8" id="amount"value="" readonly></div></div>';
+        }
+
+        function deleteLine() {
+            document.getElementById("items").deleteRow(1);
         }
 
 
