@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+
+<body>
+    <script>
+        //1. Comparision Operators
+        //1.1 Short-circuiting in boolean operators
+
+        //example 1...
+        var test = true;
+        function isTrue() {
+            console.log("Function is true...");
+        }
+        function isFalse() {
+            console.log("Function is false...");
+        }
+        if (test) {               //method without short-circuiting..
+            isTrue();
+        }
+        (test && isTrue());       //method with short-circuiting...
+
+        test = false;              //method without short-circuiting..
+        if (!test) {
+            isFalse();
+        }
+        (test || isFalse());        //method with short-circuiting...
+
+
+        //example 2...
+
+        function friendName(name) {
+            name = name || 'John';
+            console.log("My Friend's name is " + name);
+        }
+        friendName();               //My Friend's name is John
+        friendName('Devid');        //My Friend's name is Devid
+
+        //-----------------------------------------------------------
+
+        //1.2 Ternary operators (used to shorten if/else operations)
+        //=> Using Ternary Operator: 
+        var animal = 'kitty';
+        var result = (animal === 'kitty') ? 'cute' : 'still nice';
+        console.log("output with ternary operator:", result);  //Prints: output with ternary operator: cute
+
+        //=> Usinf If/Else
+        var animal = 'kitty';
+        var result = '';
+        if (animal == 'kitty') {
+            result = 'cute';
+        } else {
+            result = 'still nice';
+        }
+        console.log("output with if else:", result);        //Prints: output with if else: cute
+
+        //-----------------------------------------------------------------------------------
+
+        //1.3 Switch Case in JS
+        var animal = 'Lion';
+        switch (animal) {
+            case 'Dog':
+                console.log('I will not run since animal !== "Dog"'); break;
+            case 'Cat':
+                console.log('I will not run since animal !== "Cat"'); break;
+            default:
+                console.log('I will run since animal does not match any other case');
+        }
+
+        //1.4 Strategy..
+        const AnimalSays = {
+            dog() {
+                return 'woof';
+            },
+            cat() {
+                return 'meow';
+            },
+            lion() {
+                return 'roar';
+            },
+            // ... other animals
+            default() {
+                return 'moo';
+            }
+        };
+
+        function makeAnimalSpeak(animal) {
+            const speak = AnimalSays[animal] || AnimalSays.default;
+            console.log(animal + ' says ' + speak());
+        }
+
+        makeAnimalSpeak('dog')          //prints: dog says woof
+        makeAnimalSpeak('cat')          //prints: cat says meow
+        makeAnimalSpeak('lion')         //prints: lion says roar 
+        makeAnimalSpeak('snake')        //prints: snake says moo
+
+        //----------------------------------------------------------------------
+
+        //2. Sorting Arrays...
+        //2.1 Default Sort..(Sort array according to the unicode..)
+        arr = ['s', 't', 'a', 34, 'K', 'o', 'v', 'E', 'r', '2', '4', 'o', 'W', -1, '-4'];
+        console.log(arr.sort());    //[-1, '-4', '2', 34, '4', 'E', 'K', 'W', 'a', 'o', 'o', 'r', 's', 't', 'v']
+
+        //2.2 Sort Array in Ascending order..
+        const arr1 = [40, 100, 1, 5, 25, 10];
+        arr1.sort(function (a, b) { return a - b });
+        console.log(arr1);                      //[1, 5, 10, 25, 40, 100]
+
+        //2.2 Sort Array in Descending order..
+        const arr2 = [40, 100, 1, 5, 25, 10];
+        arr2.sort(function (a, b) { return b - a });
+        console.log(arr2);                      //[100, 40, 25, 10, 5, 1]
+
+        //2.3 Lowest Value in array...
+        const lowest_arr = [40, 100, 1, 5, 25, 10];
+        lowest_arr.sort(function (a, b) { return a - b });     // Sort the numbers in ascending order
+        let lowest = lowest_arr[0];
+        console.log(lowest);       //1
+
+        //2.4 Highest value in array...
+        const highest_arr = [40, 100, 1, 5, 25, 10];
+        highest_arr.sort(function (a, b) { return b - a });     // Sort the numbers in ascending order
+        let highest = highest_arr[0];
+        console.log(highest);       //100
+
+
+        //----------------------------------------------------------------
+
+        
+
+
+    </script>
+</body>
+
+</html>
