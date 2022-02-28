@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+
+<body>
+    <script>
+
+        //Boolean: True or False
+        function returnBoolean() {
+            return true;
+        }
+        console.log(returnBoolean());    //true
+
+        function trueOrFalse(wasThatTrue) {
+            if (wasThatTrue) {
+                return "Yes, that was true!";
+            } else {
+                return "No, that was false!";
+            }
+        }
+        console.log(trueOrFalse(true));     //Yes, that was true!
+
+        //----------------------------------------------------------
+
+        // = is assignment operator
+        // == is used to check if the values are equal
+        function testEqual(val) {
+            if (val == 12) {
+                return "Equal";
+            }
+            return "Not Equal";
+        }
+        console.log(testEqual(10));         //Not Equal
+
+        //---------------------------------------------------------------------
+
+        // === checks weather the value as well as the datatype is equal
+        // === also called as strict equality operator
+        function testStrict(val) {
+            if (val === '12') {
+                return "Equal";
+            }
+            return "Not Equal";
+        }
+        console.log(testStrict(12));        //Not Equal
+
+
+
+        function testStrictlyNotEqual(val) {
+            if (val !== '12') { //will check if the values and datatypes are not equal
+                return "Not 'Strictly Equal'";
+            }
+            return "'Strictly Equal'";
+        }
+        console.log(testStrictlyNotEqual(12));       //Not 'Strictly Equal'
+
+
+
+        function testGreaterThan(val) {
+            if (val > 100) {
+                return "Greater than 100";
+            } return "Not greater than 100";
+        }
+        console.log(testGreaterThan(100));      //Not greater than 100
+
+
+        function testGreaterOrEqual(val) {
+            if (val >= 100) {
+                return "Greater than Or Equal to 100";
+            } return "Not greater than 100";
+        }
+        console.log(testGreaterOrEqual(100));       //Greater than Or Equal to 100
+
+
+        function testLesserOrEqual(val) {
+            if (val <= 100) {
+                return "Lesser than Or Equal to 100";
+            } return "Not lesser than 100";
+        }
+        console.log(testLesserOrEqual(100));        //Lesser than Or Equal to 100
+
+
+
+        function testLogicalAnd(val) {
+            if (val <= 50 && val >= 25) {
+                return "Yes";
+            }
+            return "No";
+        }
+        console.log(testLogicalAnd(100));       //No
+
+
+        function testLogicalOr(val) {
+            if (val >= 50 || val <= 25) {
+                return "Outside";
+            }
+            return "No";
+        }
+        console.log(testLogicalOr(100));        //Outside
+
+
+        //OBJECTS
+        var ourDog = {
+            "name": "Camper",
+            "legs": 4,
+            "tails": 1,
+            "friends": ["everything!"]
+        };
+
+        //accessing objects with dot operators
+        var testObj = {
+            "hat": "ballcap",
+            "shirt": "jersey",
+            "shoes": "cleats",
+            "the watch": "fossil"
+        };
+        var hatValue = testObj.hat;
+        var shirtValue = testObj.shirt;
+        var shoesValue = testObj['shoes'];
+        var shirtValue = testObj["the watch"];
+        //bracket notation for the property with the space in the name
+        //bracket notation can also be used to look up obj properties using variables
+        var players = {
+            7: "M.S Dhoni",
+            18: "V. Kohli",
+            45: "Rohit Sharma"
+        };
+        var playerNumber = 7;
+        var player = players[playerNumber];
+        //Updating object properties
+        var ourDog = {
+            "name": "Camper",
+            "legs": 4,
+            "tails": 1,
+            "friends": []
+        };
+        ourDog.friends = ["everything!"]; //updating the value
+        // console.log(ourDog.friends);
+        //Add new value: Dot notation / bracket notation
+        ourDog.bark = "bow-wow";
+        ourDog["colour"] = "White";
+        //delete a property from the object
+        delete ourDog.colour;
+        console.log(ourDog.colour) //this will give undefined as output
+
+        //using objects lookup
+        function phoneticLookup(val) {
+            var lookup = {
+                "alpha": "Adams",
+                "bravo": "Boston",
+                "charlie": "Chicago",
+                "delta": "Denver",
+                "echo": "Easy",
+                "foxtrot": "frank"
+            };
+            result = lookup[val];
+            return result;
+        }
+        console.log(phoneticLookup("foxtrot"));
+
+        var myObj = {
+            gift: "pony",
+            pet: "kitten",
+            bed: "sleigh"
+        };
+        function checkObj(checkProp) {
+            if (myObj.hasOwnProperty(checkProp)) {
+                return myObj[checkProp];
+            } else {
+                return "Not Found";
+            }
+        } //hasOwnProperty method checks wether the object has the property or not
+        console.log(checkObj("gift"));
+        console.log(checkObj("hello"));
+    </script>
+</body>
+
+</html>
