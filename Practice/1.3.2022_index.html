@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Welcome <span id="name"></span>!</h2>
+
+    <script>
+
+        //1. Set..
+        //1.1 Create a set..
+
+        const arr = [1, 2, 3, 4, 4, 5];
+        const mySet = new Set(arr);
+
+        console.log(mySet);       //Set(5) {size: 5, 1, 2, 3, 4, 5}
+
+        //1.2 Adding value to a set..
+
+        mySet.add(6);
+        console.log(mySet);    //Set(6) {size: 6, 1, 2, 3, 4, 5, …}
+
+        //1.3 Chaining add() calls together..
+
+        mySet.add(1).add(2).add(3);
+        console.log(mySet);    //Set(6) { size: 6, 1, 2, 3, 4, 5, … }
+
+
+        //1.4 Removing value from set..
+        mySet.delete(5);
+        console.log(mySet);     //Set(5) {size: 5, 1, 2, 3, 4, 6}
+        console.log(mySet.delete(5));       //true
+        console.log(mySet.delete(7));       //false
+
+        //1.5 Checking if a value exist in a set..
+
+        console.log(mySet.has(1));      //true
+
+        console.log(mySet.has(9));      //false
+
+        //1.6 Clearing a set..
+
+        mySet.clear();
+        console.log(mySet);         //Set(0) {size: 0}
+
+        //1.7 Getting set length..
+
+        mySet.add(1).add(2).add(3);
+        console.log(mySet.size);        //3
+
+        //------------------------------------------------------------------
+
+
+        //2. Modals: Prompts..
+
+        //2.1 User Prompts..
+
+        alert("Hello World");  //generate popup box with a message "Hello World"
+
+        confirm("Delete this comment?");    //generate popup box with a question, 
+        //will have two options: delete or cancel.
+
+        prompt("Enter your website address", "http://"); //generates popup with the provided message and an input field with an optional pre-filled value.
+
+
+        //2.2 Persistent prompt..
+
+        var userName; while (!userName) {
+            userName = prompt("Enter your name", ""); if (!userName) {
+                alert("Please, we need your name!");
+            } else {
+                document.getElementById("name").innerHTML = userName;
+            }
+        }           //prints Welcome + "User Input"
+
+
+        //-----------------------------------------------------------------------------------
+
+        //3 Let vs Var..
+
+        //Diff between 'let' and 'var'
+        //1. You can't redefine the variable with "let"
+        //2. variable defined with 'let' has Scope where it is defined only
+        // where as in case of 'var' it has a global scope
+
+        function checkScope() {
+            if (true) {
+                var i = 'block scope'; //this will be a global variable
+                console.log("Block scope i is: ", i);
+            }
+            console.log("Function scope i is: ", i);
+            return i;
+        }
+        checkScope();               //Block scope i is:  block scope
+        //Function scope i is:  block scope
+
+
+        //---------------------------------------------------------------------
+
+
+        //4. Cookie..
+
+        //4.1  Test if cookie are unabled..
+
+        if (navigator.cookieEnabled === false) {
+            alert("Error: cookies not enabled!");
+        }   //popup the message when cookie is not enabled.
+
+
+        //4.2 Adding and Setting Cookies
+
+        var NAME = "Varad";
+        var VALUE = "1234";
+        var PATH = "/c/reached";
+        var EXPIRES;
+
+        EXPIRES = (new Date(Date.now() + 60000)).toUTCString();  //to set the expiration time of cookie..
+
+        document.cookie += NAME + "=" + VALUE + "; expires=" + EXPIRES + "; path=" + PATH; //stores the cookie in client's browser
+
+        //4.3 Removing cookies...
+
+        var expiry = new Date();
+        expiry.setTime(expiry.getTime() - 3600);
+        document.cookie = name + "=; expires=" + expiry.toGMTString() + "; path=/" //will remove cookie with given name..
+
+
+//--------------------------------------------------------------
+    </script>
+</body>
+
+</html>
