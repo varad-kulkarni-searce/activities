@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Welcome <span id="name"></span>!</h2>
+
+    <script>
+
+        //                               Getters and Setters...
+
+
+        // Theory: They are code constructs that help developers access and modify the properties of objects.
+
+
+        // We can create getters and setters in three different ways:
+
+        // 1 => with the default method syntax (getter and setter methods),
+        // 2 => with the get and set keywords,
+        // 3 => with the Object.defineProperty() method.
+
+
+
+        var myCar = {
+            color: "blue",
+            company: "Toyota"
+        };
+
+        //Directly accessing properties:
+
+        console.log(myCar.color);   // blue
+
+        console.log(myCar.company);    // Toyota
+
+
+        //Accessing properties using getters:
+
+        //1. Accessing properities seperately:
+
+        var myCar = {
+            color: "blue",
+            company: "Toyota",
+
+            getColor: function () {
+                return this.color;
+            },
+
+            getCompany: function () {
+                return this.company;
+            }
+        };
+
+        console.log(myCar.getColor());  // blue
+        console.log(myCar.getCompany());   // Toyota
+
+
+
+        //2. Values of both properties at the same time:
+
+        var myCar = {
+            color: "blue",
+            company: "Toyota",
+
+            getCar: function () {
+                return "This is a " + this.color + " " + this.company + ".";
+            },
+        };
+
+        console.log(myCar.getCar());    //This is a blue Toyota.
+
+
+
+        //Setter Method:
+
+        var myCar = {
+
+            /* Properties */
+            color: "blue",
+            company: "Toyota",
+
+            /* Getter methods */
+            getColor: function () {
+                return this.color;
+            },
+            getCompany: function () {
+                return this.company;
+            },
+
+            /* Setter methods */
+            setColor: function (newColor) {
+                this.color = newColor;
+            },
+            setCompany: function (newCompany) {
+                this.company = newCompany;
+            }
+        };
+
+        myCar.setColor("red");
+        myCar.setCompany("BMW");
+
+        console.log(myCar.getColor());    // red
+
+        console.log(myCar.getCompany());    // BMW
+
+
+        /*-------------------------------------------------------------------------------*/
+
+
+        //2. Using get and set keywords...
+
+
+        //get 
+
+        var myCar = {
+            /* Data properties */
+            defColor: "blue",
+            defCompany: "Toyota",
+
+            /* Accessor properties (getters) */
+            get color() {
+                return this.defColor;
+            },
+            get company() {
+                return this.defCompany;
+            }
+        };
+
+        /* Calling the getter accessor properties */
+
+        //accessing value as a property..
+        console.log(myCar.color);           // blue
+
+        //accessing the value as a method
+        console.log(myCar.color());                 //error..
+
+        console.log(myCar.company);         // Toyota
+        console.log(myCar.company());                 //error..
+
+
+
+        //set 
+
+        var myCar = {
+            /* Data properties */
+            defColor: "blue",
+            defCompany: "Toyota",
+
+            /* Accessor properties (getters) */
+            get color() {
+                return this.defColor;
+            },
+            get company() {
+                return this.defCompany;
+            },
+
+            /* Accessor properties (setters) */
+            set color(newColor) {
+                this.defColor = newColor;
+            },
+            set company(newCompany) {
+                this.defCompany = newCompany;
+            }
+        };
+
+        /* Calling the setter accessor properties */
+        myCar.color = "red";
+        myCar.company = "BMW";
+
+        /* Checking the new values with the getter accessor properties */
+        console.log(myCar.color);       // red
+
+        console.log(myCar.company);     // BMW
+
+
+        /*----------------------------------------------------------------------------------------------*/
+
+
+        //3. Using the Object.defineProperty() method.
+
+        /* Original object*/
+        var myCar = {
+            defColor: "blue",
+            defCompany: "Toyota"
+        };
+
+        // Syntax: Object.defineProperty(obj, prop, descriptor)
+
+        /* Adding a getter and setter to defColor */
+        Object.defineProperty(myCar, "color", {
+            get: function () {
+                return this.defColor;
+            },
+            set: function (newColor) {
+                this.defColor = newColor;
+            },
+        });
+
+        /* Adding a getter and setter to defCompany */
+        Object.defineProperty(myCar, "company", {
+            get: function () {
+                return this.defCompany;
+            },
+            set: function (newCompany) {
+                this.defCompany = newCompany;
+            }
+        });
+
+        /* Checking the value of the properties with the getters */
+        console.log(myCar.color);       // blue
+
+        console.log(myCar.company);     // Toyota
+
+
+        /* Modifying the values with the setters */
+        myCar.color = "red";
+        myCar.company = "BMW";
+
+
+        /* Checking the modified properties with the getters */
+        console.log(myCar.color);       // red
+
+        console.log(myCar.company);     // BMW
+
+
+        /*----------------------------------------------------------------------------------*/
+
+        //Smart Getters and Setters..
+
+        var user = {
+            get name() {
+                return this._name;
+            },
+
+            set name(value) {
+                if (value.length < 4) {
+                    console.log("Name is too short, need at least 4 characters");
+                }
+                this._name = value;
+            }
+        };
+
+        user.name = "John";
+        console.log(user.name);     // John
+
+        user.name = "";
+        console.log(user.name);     //Name is too short, need at least 4 characters
+
+
+        /*----------------------------------------------------------------------------------------*/
+
+
+        // Read only/ Write only properties...
+        // Only getter => Read only
+        // Only setter => Write only
+
+
+        //1. Read only..
+
+        var car = {
+
+            defColor: "blue",
+
+            get color() {
+                return this.defColor;
+            },
+
+        };
+
+        console.log(car.color);         //blue  
+
+        car.color = "red";
+        console.log(car.color);         //blue
+
+
+        //2. Write only..
+
+        var car = {
+
+            defColor: "blue",
+
+            set color(value) {
+                this.defColor = value
+            },
+
+        };
+
+        console.log(car.color);     //undefined
+
+        car.color = "red";
+        console.log(car.color);     //undefined
+
+        console.log(car.defColor);      //red
+
+        /*---------------------------------------------------------------*/
+
+        //Getter has higher precedence...
+
+        const person = {
+            name: 'Bill Gates',
+            get name() {
+                return 'Jeff Bezos';
+            }
+        };
+
+        console.log(person.name)     //Jeff Bezos
+
+
+        const person = {
+            name: 'Bill Gates',
+            get name() {
+                return this.name;
+            }
+        };
+
+        console.log(person.name)        //Uncaught RangeError: Maximum call stack size exceeded
+
+
+        /*------------------------------------------------------------------*/
+
+
+//Most common use cases:
+//1. Securing access to data properties
+//2. Adding extra logic to properties before getting or setting their values.
+
+
+    </script>
+</body>
+
+</html>
