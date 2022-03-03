@@ -1,7 +1,7 @@
 // 0 1 0 2 1 0 1 3 2 1 2 1
 //ans => 6
 
-let arr = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1];
+
 
 let waterTrap = function (height) {
     let trappedWater = 0, n = height.length;
