@@ -1,11 +1,10 @@
 
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI
 import uvicorn
 import sqlite3
 
 app = FastAPI()
-from sqlite3 import Error
 
 conn = sqlite3.connect('StudentsDatabase.db', check_same_thread=False)
 c = conn.cursor()
@@ -57,7 +56,8 @@ class Students:
     #     return c.fetchall()
 
     @app.post(
-        '/add_multiple_students/{student_id_1}/{student_name_1}/{student_class_1}/{student_marks_1}/student_id_2}/{student_name_2}/{student_class_2}/{student_marks_2}')
+        '/add_multiple_students/{student_id_1}/{student_name_1}/{student_class_1}/{student_marks_1}/student_id_2}/{'
+        'student_name_2}/{student_class_2}/{student_marks_2}')
     def add_multiple_students(self, student_id_1, student_name_1, student_class_1, student_marks_1, student_id_2,
                               student_name_2, student_class_2, student_marks_2):
         student_list = [(student_id_1, student_name_1, student_class_1, student_marks_1),
@@ -65,26 +65,6 @@ class Students:
                         ]
         c.executemany(f"INSERT INTO students VALUES (?,?,?,?)", student_list)
         return c.fetchall()
-
-
-# if __name__ == '__main__':
-#     # student_obj = Students()        # initialising object "student_obj" of "Students()" class.
-#     # student_obj.add_student()
-#     # student_obj.retrieve_all_students_details()
-#     # student_obj.get_student_details_by_student_id()
-#     # student_obj.delete_student_by_id()
-#     # student_obj.delete_student_by_student_id()
-#     # student_obj.update_movie_details_by_id()
-#     # student_obj.update_movie_details_by_student_id()
-#
-#     uvicorn.run("main:app", reload=True)
-# @app.get('/get_student_detail_by_id/{student_id}')
-# def student(student_id):
-#     student_detail = get_student_details_by_id(student_id)
-#     print(student_detail)
-#     return {"student details": student_detail}
-
-# conn.close()
 
 
 if __name__ == "__main__":
