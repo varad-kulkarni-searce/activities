@@ -47,5 +47,11 @@ def all_student_db():
     return db.selectAll()
 
 
+# Update student
+@app.api_route('/student_access', methods=["PUT"])
+def update_student(student_id, student_name, student_class, student_marks):
+    return db.update(student_id, student_name, student_class, student_marks)
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)

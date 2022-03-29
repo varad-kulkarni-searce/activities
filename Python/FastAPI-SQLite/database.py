@@ -33,6 +33,12 @@ class SQLiteConnector:
         c.executemany(f"INSERT INTO students VALUES (?,?,?,?)", student_list)
         return c.fetchall()
 
+    def update(self, student_id, student_name, student_class, student_marks):
+        sqlite_update_query = """Update students set student_name = ?, student_class = ?, student_marks = ? where 
+        student_id = ? """
+        column_values = (student_name, student_class, student_marks, student_id)
+        c.execute(sqlite_update_query, column_values)
+
 
 db = SQLiteConnector()
 # print(db.select('U100'))
