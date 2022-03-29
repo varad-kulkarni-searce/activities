@@ -29,7 +29,7 @@ class SQLiteConnector:
         c.execute(f"DELETE FROM students WHERE student_id=:student_id", {'student_id': student_id})
         #         return c.fetchall()
 
-    def multipleadd(self, student_list):
+    def bulkWrite(self, student_list):
         c.executemany(f"INSERT INTO students VALUES (?,?,?,?)", student_list)
         return c.fetchall()
 
