@@ -13,27 +13,33 @@ c = conn.cursor()
 
 class SQLiteConnector:
 
-    def selectAll(self):
+    @staticmethod
+    def select_all():
         c.execute(f"SELECT * FROM students ORDER BY student_id")
         return c.fetchall()
 
-    def select(self, student_id):
+    @staticmethod
+    def select(student_id):
         c.execute(f"SELECT * FROM students WHERE student_id=:student_id", {'student_id': student_id})
         return c.fetchall()
 
-    def write(self, student_id, student_name, student_class, student_marks):
+    @staticmethod
+    def write(student_id, student_name, student_class, student_marks):
         c.execute(f"INSERT INTO students VALUES ('{student_id}', '{student_name}', '{student_class}', {student_marks})")
         #         return c.fetchall()
 
-    def delete(self, student_id):
+    @staticmethod
+    def delete(student_id):
         c.execute(f"DELETE FROM students WHERE student_id=:student_id", {'student_id': student_id})
         #         return c.fetchall()
 
-    def bulkWrite(self, student_list):
+    @staticmethod
+    def bulk_write(student_list):
         c.executemany(f"INSERT INTO students VALUES (?,?,?,?)", student_list)
         return c.fetchall()
 
-    def update(self, student_id, student_name, student_class, student_marks):
+    @staticmethod
+    def update(student_id, student_name, student_class, student_marks):
         sqlite_update_query = """Update students set student_name = ?, student_class = ?, student_marks = ? where 
         student_id = ? """
         column_values = (student_name, student_class, student_marks, student_id)

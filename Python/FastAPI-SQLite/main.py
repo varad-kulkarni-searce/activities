@@ -26,7 +26,7 @@ def add_multiple_students(student_id_1, student_name_1, student_class_1, student
     student_list = [(student_id_1, student_name_1, student_class_1, student_marks_1),
                     (student_id_2, student_name_2, student_class_2, student_marks_2),
                     ]
-    return db.bulkWrite(student_list)
+    return db.bulk_write(student_list)
 
 
 # Add student
@@ -44,7 +44,7 @@ def delete_student(student_id):
 # Read all students
 @app.api_route('/student_access_all', methods=["GET"])
 def all_student_db():
-    return db.selectAll()
+    return db.select_all()
 
 
 # Update student
