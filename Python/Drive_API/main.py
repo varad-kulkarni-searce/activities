@@ -15,10 +15,11 @@ from googleapiclient.http import MediaFileUpload
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
-def access_all_files():
+# To generate the tokens from the credentials file download from GCP
+def get_credentials():
     """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
+        Prints the names and ids of the first 10 files the user has access to.
+        """
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -36,7 +37,12 @@ def access_all_files():
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+    return creds
 
+
+# To access all the files present in the drive
+def access_all_files():
+    creds = get_credentials()
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -59,28 +65,9 @@ def access_all_files():
         print(f'An error occurred: {error}')
 
 
+# To access all the files present in the specific folder in list format
 def access_specific_folder_files_list():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/varadkulkarani/Desktop/client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+    creds = get_credentials()
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -102,28 +89,9 @@ def access_specific_folder_files_list():
         print(f'An error occurred: {error}')
 
 
+# To access all the files present in the specific folder in table format (Dataframe)
 def access_specific_folder_files_dataframe():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/varadkulkarani/Desktop/client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+    creds = get_credentials()
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -142,28 +110,9 @@ def access_specific_folder_files_dataframe():
         print(f'An error occurred: {error}')
 
 
+# To upload the file from local machine to the drive
 def upload_files():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/varadkulkarani/Desktop/client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+    creds = get_credentials()
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -195,28 +144,9 @@ def upload_files():
         print(f'An error occurred: {error}')
 
 
+# To copy the required file to the specified folder in drive
 def copy_files():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
-    creds = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/varadkulkarani/Desktop/client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
+    creds = get_credentials()
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -245,8 +175,8 @@ def copy_files():
 
 
 if __name__ == '__main__':
-    # access_all_files()
+    access_all_files()
     access_specific_folder_files_list()
     access_specific_folder_files_dataframe()
-    # upload_files()
-    # copy_files()
+    upload_files()
+    copy_files()
