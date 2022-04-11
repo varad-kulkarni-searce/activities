@@ -174,9 +174,47 @@ def copy_files():
         print(f'An error occurred: {error}')
 
 
+# To get all the revisions of a file in google drive
+def get_versions():
+    creds = get_credentials()
+    try:
+        service = build('drive', 'v3', credentials=creds)
+
+        # Call the Drive v3 API
+
+        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        response = service.revisions().list(
+            fileId=file_id,
+            fields='*',
+            pageSize=1000
+        ).execute()
+
+        revisions = response.get('revisions')
+        nextPageToken = response.get('nextPageToken')
+
+        while nextPageToken:
+            response = service.revisions().list(
+                fileId=file_id,
+                fields='*',
+                pageSize=1000,
+                pageToken=nextPageToken
+            ).execute()
+            revisions = response.get('revisions')
+            nextPageToken = response.get('nextPageToken')
+        # print(revisions)
+        pd.set_option('expand_frame_repr', True)
+        df = pd.DataFrame(revisions)
+        print(df)
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from drive API.
+        print(f'An error occurred: {error}')
+
+
 if __name__ == '__main__':
     access_all_files()
     access_specific_folder_files_list()
     access_specific_folder_files_dataframe()
     upload_files()
     copy_files()
+    get_versions()
