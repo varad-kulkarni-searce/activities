@@ -2,13 +2,14 @@ from __future__ import print_function
 
 import os.path
 import pandas as pd
+import io
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 # If modifying these scopes, delete the file token.json.
 # SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
@@ -201,10 +202,39 @@ def get_versions():
             ).execute()
             revisions = response.get('revisions')
             nextPageToken = response.get('nextPageToken')
-        # print(revisions)
-        pd.set_option('expand_frame_repr', True)
-        df = pd.DataFrame(revisions)
-        print(df)
+        print(revisions)
+        # pd.set_option('expand_frame_repr', True)
+        # df = pd.DataFrame(revisions)
+        # print(df)
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from drive API.
+        print(f'An error occurred: {error}')
+
+
+# To get all the revisions of a file in google drive
+def download_file():
+    creds = get_credentials()
+    try:
+        service = build('drive', 'v3', credentials=creds)
+
+        # Call the Drive v3 API
+
+        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        file_name = 'TestingDocumentDownloaded'
+        request = service.files().get_media(fileId=file_id)
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fh, request)
+        done = False
+        while done is False:
+            status, done = downloader.next_chunk()
+            print("Download %d%%." % int(status.progress() * 100))
+
+        fh.seek(0)
+
+        with open(os.path.join('/Users/varadkulkarani/Desktop', file_name), 'wb') as f:
+            f.write(fh.read())
+            f.close()
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -218,3 +248,6 @@ if __name__ == '__main__':
     upload_files()
     copy_files()
     get_versions()
+    # id_1: 0B1KTZEbMS-TwRTcwcXVCVDJjZUhrcE1sNGVibDdnSkM4eVhRPQ
+    # id_2: 0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ
+    download_file()
