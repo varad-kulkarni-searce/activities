@@ -212,6 +212,32 @@ def get_versions():
         print(f'An error occurred: {error}')
 
 
+def download_version():
+    creds = get_credentials()
+    try:
+        service = build('drive', 'v3', credentials=creds)
+
+        # Call the Drive v3 API
+
+        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        revision_history_id = '0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ'
+        # file_name = 'TestingDocumentDownloaded'
+        request = service.revisions().get_media(
+            fileId=file_id,
+            revisionId=revision_history_id
+        )
+        with io.FileIO('TestingDocumentPreviousVersion2.docx', 'wb') as fh:
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+                print(status.progress() * 100, '%')
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from drive API.
+        print(f'An error occurred: {error}')
+
+
 # To get all the revisions of a file in google drive
 def download_file():
     creds = get_credentials()
@@ -251,3 +277,4 @@ if __name__ == '__main__':
     # id_1: 0B1KTZEbMS-TwRTcwcXVCVDJjZUhrcE1sNGVibDdnSkM4eVhRPQ
     # id_2: 0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ
     download_file()
+    download_version()
