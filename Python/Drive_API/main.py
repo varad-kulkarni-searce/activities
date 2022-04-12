@@ -17,7 +17,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
 # To generate the tokens from the credentials file download from GCP
-def get_credentials():
+def get_credentials(credentials_path):
     """Shows basic usage of the Drive v3 API.
         Prints the names and ids of the first 10 files the user has access to.
         """
@@ -33,7 +33,7 @@ def get_credentials():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                '/Users/varadkulkarani/Desktop/client_secret.json', SCOPES)
+                credentials_path, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
@@ -43,7 +43,8 @@ def get_credentials():
 
 # To access all the files present in the drive
 def access_all_files():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
@@ -68,13 +69,15 @@ def access_all_files():
 
 # To access all the files present in the specific folder in list format
 def access_specific_folder_files_list():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    folder_id = input("Enter folder id:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
         # query to get only folders: mimeType = 'application/vnd.google-apps.folder'
-        folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
+        # folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
         query = f"parents = '{folder_id}'"
         results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
@@ -92,13 +95,15 @@ def access_specific_folder_files_list():
 
 # To access all the files present in the specific folder in table format (Dataframe)
 def access_specific_folder_files_dataframe():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    folder_id = input("Enter folder id:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
         # query to get only folders: mimeType = 'application/vnd.google-apps.folder'
-        folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
+        # folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
         query = f"parents = '{folder_id}'"
         results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
         items = results.get('files')
@@ -113,32 +118,37 @@ def access_specific_folder_files_dataframe():
 
 # To upload the file from local machine to the drive
 def upload_files():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    folder_id = input("Enter folder id:")
+    file_name = input("Enter file name:")
+    mime_type = input("Enter mime type of the file:")
+    file_path = input("Enter path of the file:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
         # query to get only folders: mimeType = 'application/vnd.google-apps.folder'
-        folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
+        # folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
         # /Users/varadkulkarani/Desktop/Testing
 
-        file_names = ['TestingDocument.docx']
-        mime_types = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+        # file_name = 'TestingDocument.docx'
+        # mime_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 
-        for file_name, mime_type in zip(file_names, mime_types):
-            file_metadata = {
-                'name': file_name,
-                'parents': [folder_id]
-            }
-            media = MediaFileUpload('/Users/varadkulkarani/Desktop/Testing/{0}'.format(file_name),
-                                    mimetype=mime_type)
+        file_metadata = {
+            'name': file_name,
+            'parents': folder_id
+        }
+        # file_path = '/Users/varadkulkarani/Desktop/Testing/{0}'
+        media = MediaFileUpload(file_path.format(file_name),
+                                mimetype=mime_type)
 
-            file = service.files().create(
-                body=file_metadata,
-                media_body=media,
-                fields='id'
-            ).execute()
-            print('File ID: %s' % file.get('id'))
+        file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id'
+        ).execute()
+        print('File ID: %s' % file.get('id'))
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -147,28 +157,34 @@ def upload_files():
 
 # To copy the required file to the specified folder in drive
 def copy_files():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    source_file_id = input("Enter id of the file that needs to be copied:")
+    folder_id = input("Enter folder id:")
+    file_name = input("Enter file name:")
+    creds = get_credentials(credentials_path)
+
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
         # query to get only folders: mimeType = 'application/vnd.google-apps.folder'
-        source_file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
-        folder_ids = ['1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1']
+        # source_file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        # folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
         # /Users/varadkulkarani/Desktop/Testing
-        for folder_id in folder_ids:
-            file_metadata = {
-                'name': 'TestingDocumentCopy',
-                'parents': [folder_id],
-                # 'starred': True
-            }
 
-            file = service.files().copy(
-                body=file_metadata,
-                fileId=source_file_id
-            ).execute()
+        # 'name': 'TestingDocumentCopy',
+        file_metadata = {
+            'name': file_name,
+            'parents': folder_id,
+            # 'starred': True
+        }
 
-            print('File ID: %s' % file.get('id'))
+        file = service.files().copy(
+            body=file_metadata,
+            fileId=source_file_id
+        ).execute()
+
+        print('File ID: %s' % file.get('id'))
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -177,13 +193,15 @@ def copy_files():
 
 # To get all the revisions of a file in google drive
 def get_versions():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    file_id = input("Enter file id:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
 
-        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        # file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
         response = service.revisions().list(
             fileId=file_id,
             fields='*',
@@ -213,20 +231,25 @@ def get_versions():
 
 
 def download_version():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    file_id = input("Enter file id:")
+    revision_history_id = input("Enter revision history id of the file:")
+    revision_file_name = input("Enter file name for revised/ previous version:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
 
-        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
-        revision_history_id = '0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ'
+        # file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        # revision_history_id = '0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ'
         # file_name = 'TestingDocumentDownloaded'
         request = service.revisions().get_media(
             fileId=file_id,
             revisionId=revision_history_id
         )
-        with io.FileIO('TestingDocumentPreviousVersion2.docx', 'wb') as fh:
+        # revision_file_name = 'TestingDocumentPreviousVersion2.docx'
+        with io.FileIO(revision_file_name, 'wb') as fh:
             downloader = MediaIoBaseDownload(fh, request)
             done = False
             while not done:
@@ -240,14 +263,18 @@ def download_version():
 
 # To get all the revisions of a file in google drive
 def download_file():
-    creds = get_credentials()
+    credentials_path = input("Enter path of credentials file:")
+    file_id = input("Enter file id:")
+    file_name = input("Enter file name:")
+    download_path = input("Enter the path at which file needs to be downloaded:")
+    creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
 
         # Call the Drive v3 API
 
-        file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
-        file_name = 'TestingDocumentDownloaded'
+        # file_id = '19loLZUAunAS31X6K82lMPLEaediIURWm'
+        # file_name = 'TestingDocumentDownloaded'
         request = service.files().get_media(fileId=file_id)
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
@@ -257,8 +284,8 @@ def download_file():
             print("Download %d%%." % int(status.progress() * 100))
 
         fh.seek(0)
-
-        with open(os.path.join('/Users/varadkulkarani/Desktop', file_name), 'wb') as f:
+        # download_path = '/Users/varadkulkarani/Desktop'
+        with open(os.path.join(download_path, file_name), 'wb') as f:
             f.write(fh.read())
             f.close()
 
@@ -268,13 +295,15 @@ def download_file():
 
 
 if __name__ == '__main__':
+    # credentials_path = '/Users/varadkulkarani/Desktop/client_secret.json'
+    # id_1: 0B1KTZEbMS-TwRTcwcXVCVDJjZUhrcE1sNGVibDdnSkM4eVhRPQ
+    # id_2: 0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ
     access_all_files()
     access_specific_folder_files_list()
     access_specific_folder_files_dataframe()
     upload_files()
     copy_files()
     get_versions()
-    # id_1: 0B1KTZEbMS-TwRTcwcXVCVDJjZUhrcE1sNGVibDdnSkM4eVhRPQ
-    # id_2: 0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ
     download_file()
     download_version()
+
