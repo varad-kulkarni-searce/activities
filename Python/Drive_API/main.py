@@ -161,7 +161,7 @@ def upload_files(credentials_path, folder_id, file_name, mime_type, file_path):
             media_body=media,
             fields='id'
         ).execute()
-        return 'File ID: %s' % file.get('id')
+        return file.get('id')
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -197,12 +197,24 @@ def copy_files(credentials_path, source_file_id, folder_id, file_name):
             body=file_metadata,
             fileId=source_file_id
         ).execute()
-        return 'File ID: %s' % file.get('id')
+        return file.get('id')
         # print('File ID: %s' % file.get('id'))
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
+
+
+# Function to clone specific version of a file..
+# steps: download_version -> upload_version -> copy_version
+@app.api_route("/copy_version", methods=["POST"])
+def copy_version(credentials_path, file_id, revision_history_id, revision_file_name, folder_id, mime_type):
+    download_version(credentials_path, file_id, revision_history_id, revision_file_name)
+    file_path = revision_file_name
+    source_file_id = upload_files(credentials_path, folder_id, revision_file_name, mime_type, file_path)
+    file_name = revision_file_name + '_copy'
+    copy_file_id = copy_files(credentials_path, source_file_id, folder_id, file_name)
+    return copy_file_id
 
 
 # To get all the revisions of a file in google drive
