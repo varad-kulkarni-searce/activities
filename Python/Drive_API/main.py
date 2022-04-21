@@ -4,12 +4,19 @@ import os.path
 import pandas as pd
 import io
 
+from urllib import request
+
+from fastapi import FastAPI
+import uvicorn
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+
+app = FastAPI()
 
 # If modifying these scopes, delete the file token.json.
 # SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
@@ -42,8 +49,9 @@ def get_credentials(credentials_path):
 
 
 # To access all the files present in the drive
-def access_all_files():
-    credentials_path = input("Enter path of credentials file:")
+@app.api_route('/access_all_files', methods=["GET"])
+def access_all_files(credentials_path):
+    # credentials_path = input("Enter path of credentials file:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -51,26 +59,27 @@ def access_all_files():
         # Call the Drive v3 API
         # query to get only folders: mimeType = 'application/vnd.google-apps.folder'
 
-        results = service.files().list(pageSize=10, fields="nextPageToken, files(id, name)").execute()
-        items = results.get('files', [])
-        # results = service.files().list(fields='1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1, files(id, name)').execute()
-        # items = results.get('files', [])
+        results = service.files().list(pageSize=20, fields="nextPageToken, files(id, name)").execute()
+        items = results.get('files')
 
         if not items:
             print('No files found.')
             return
-        print('Files:')
-        for item in items:
-            print(u'{0} ({1})'.format(item['name'], item['id']))
+        return items
+        # print('Files:')
+        # for item in items:
+        #     print(u'{0} ({1})'.format(item['name'], item['id']))
+        # return u'{0} ({1})'.format(item['name'], item['id'])
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
 
 
 # To access all the files present in the specific folder in list format
-def access_specific_folder_files_list():
-    credentials_path = input("Enter path of credentials file:")
-    folder_id = input("Enter folder id:")
+@app.api_route("/access_specific_folder_in_list_format", methods=["GET"])
+def access_specific_folder_files_list(credentials_path, folder_id):
+    # credentials_path = input("Enter path of credentials file:")
+    # folder_id = input("Enter folder id:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -80,23 +89,25 @@ def access_specific_folder_files_list():
         # folder_id = '1z81EStzOuSmFtRVEhlLpmPDLo_WdBWE1'
         query = f"parents = '{folder_id}'"
         results = service.files().list(q=query, fields="nextPageToken, files(id, name)").execute()
-        items = results.get('files', [])
+        items = results.get('files')
 
         if not items:
             print('No files found.')
             return
-        print('Files:')
-        for item in items:
-            print(u'{0} ({1})'.format(item['name'], item['id']))
+        return items
+        # print('Files:')
+        # for item in items:
+        #     print(u'{0} ({1})'.format(item['name'], item['id']))
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
         print(f'An error occurred: {error}')
 
 
 # To access all the files present in the specific folder in table format (Dataframe)
-def access_specific_folder_files_dataframe():
-    credentials_path = input("Enter path of credentials file:")
-    folder_id = input("Enter folder id:")
+@app.api_route("/access_specific_folder_in_dataframe_format", methods=["GET"])
+def access_specific_folder_files_dataframe(credentials_path, folder_id):
+    # credentials_path = input("Enter path of credentials file:")
+    # folder_id = input("Enter folder id:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -109,7 +120,8 @@ def access_specific_folder_files_dataframe():
         items = results.get('files')
         pd.set_option('expand_frame_repr', True)
         df = pd.DataFrame(items)
-        print(df)
+        # print(df)
+        return df
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -117,12 +129,13 @@ def access_specific_folder_files_dataframe():
 
 
 # To upload the file from local machine to the drive
-def upload_files():
-    credentials_path = input("Enter path of credentials file:")
-    folder_id = input("Enter folder id:")
-    file_name = input("Enter file name:")
-    mime_type = input("Enter mime type of the file:")
-    file_path = input("Enter path of the file:")
+@app.api_route("/upload_files", methods=["POST"])
+def upload_files(credentials_path, folder_id, file_name, mime_type, file_path):
+    # credentials_path = input("Enter path of credentials file:")
+    # folder_id = input("Enter folder id:")
+    # file_name = input("Enter file name:")
+    # mime_type = input("Enter mime type of the file:")
+    # file_path = input("Enter path of the file:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -148,7 +161,7 @@ def upload_files():
             media_body=media,
             fields='id'
         ).execute()
-        print('File ID: %s' % file.get('id'))
+        return 'File ID: %s' % file.get('id')
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -156,11 +169,12 @@ def upload_files():
 
 
 # To copy the required file to the specified folder in drive
-def copy_files():
-    credentials_path = input("Enter path of credentials file:")
-    source_file_id = input("Enter id of the file that needs to be copied:")
-    folder_id = input("Enter folder id:")
-    file_name = input("Enter file name:")
+@app.api_route("/make_clone", methods=["POST"])
+def copy_files(credentials_path, source_file_id, folder_id, file_name):
+    # credentials_path = input("Enter path of credentials file:")
+    # source_file_id = input("Enter id of the file that needs to be copied:")
+    # folder_id = input("Enter folder id:")
+    # file_name = input("Enter file name:")
     creds = get_credentials(credentials_path)
 
     try:
@@ -183,8 +197,8 @@ def copy_files():
             body=file_metadata,
             fileId=source_file_id
         ).execute()
-
-        print('File ID: %s' % file.get('id'))
+        return 'File ID: %s' % file.get('id')
+        # print('File ID: %s' % file.get('id'))
 
     except HttpError as error:
         # TODO(developer) - Handle errors from drive API.
@@ -192,9 +206,10 @@ def copy_files():
 
 
 # To get all the revisions of a file in google drive
-def get_versions():
-    credentials_path = input("Enter path of credentials file:")
-    file_id = input("Enter file id:")
+@app.api_route("/get_versions", methods=["GET"])
+def get_versions(credentials_path, file_id):
+    # credentials_path = input("Enter path of credentials file:")
+    # file_id = input("Enter file id:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -219,8 +234,9 @@ def get_versions():
                 pageToken=nextPageToken
             ).execute()
             revisions = response.get('revisions')
-            nextPageToken = response.get('nextPageToken')
-        print(revisions)
+            nextsPageToken = response.get('nextPageToken')
+        return revisions
+        # print(revisions)
         # pd.set_option('expand_frame_repr', True)
         # df = pd.DataFrame(revisions)
         # print(df)
@@ -230,11 +246,12 @@ def get_versions():
         print(f'An error occurred: {error}')
 
 
-def download_version():
-    credentials_path = input("Enter path of credentials file:")
-    file_id = input("Enter file id:")
-    revision_history_id = input("Enter revision history id of the file:")
-    revision_file_name = input("Enter file name for revised/ previous version:")
+@app.api_route("/download_versions", methods=["GET"])
+def download_version(credentials_path, file_id, revision_history_id, revision_file_name):
+    # credentials_path = input("Enter path of credentials file:")
+    # file_id = input("Enter file id:")
+    # revision_history_id = input("Enter revision history id of the file:")
+    # revision_file_name = input("Enter file name for revised/ previous version:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -262,11 +279,12 @@ def download_version():
 
 
 # To get all the revisions of a file in google drive
-def download_file():
-    credentials_path = input("Enter path of credentials file:")
-    file_id = input("Enter file id:")
-    file_name = input("Enter file name:")
-    download_path = input("Enter the path at which file needs to be downloaded:")
+@app.api_route("/download_file", methods=["GET"])
+def download_file(credentials_path, file_id, file_name, download_path):
+    # credentials_path = input("Enter path of credentials file:")
+    # file_id = input("Enter file id:")
+    # file_name = input("Enter file name:")
+    # download_path = input("Enter the path at which file needs to be downloaded:")
     creds = get_credentials(credentials_path)
     try:
         service = build('drive', 'v3', credentials=creds)
@@ -298,12 +316,5 @@ if __name__ == '__main__':
     # credentials_path = '/Users/varadkulkarani/Desktop/client_secret.json'
     # id_1: 0B1KTZEbMS-TwRTcwcXVCVDJjZUhrcE1sNGVibDdnSkM4eVhRPQ
     # id_2: 0B1KTZEbMS-TwSGVSWm1LTW1JTUxRVW1jRmV2UzJSZUh0aVdFPQ
-    access_all_files()
-    access_specific_folder_files_list()
-    access_specific_folder_files_dataframe()
-    upload_files()
-    copy_files()
-    get_versions()
-    download_file()
-    download_version()
 
+    uvicorn.run("main:app", reload=True)
