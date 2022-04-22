@@ -227,5 +227,36 @@ def download_file(credentials_path, file_id, file_name, download_path):
         print(f'An error occurred: {error}')
 
 
+@app.api_route('/permissions', methods=["POST"])
+def permissions(credentials_path, file_id, user_email, user_role, user_type):
+    creds = get_credentials(credentials_path)
+    try:
+        service = build('drive', 'v3', credentials=creds)
+        batch = service.new_batch_http_request(callback=callback)
+        user_permission = {
+            'type': user_type,
+            'role': user_role,
+            'emailAddress': user_email
+        }
+        batch.add(service.permissions().create(
+            fileId=file_id,
+            body=user_permission,
+            fields='id',
+        ))
+        batch.execute()
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from drive API.
+        print(f'An error occurred: {error}')
+
+
+def callback(request_id, response, exception):
+    if exception:
+        # Handle error
+        print(exception)
+    else:
+        print("Permission Id: %s" % response.get('id'))
+
+
 if __name__ == '__main__':
     uvicorn.run("main:app", reload=True)
