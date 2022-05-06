@@ -5,6 +5,12 @@ import pandas as pd
 import io
 from fastapi import FastAPI
 import uvicorn
+import smtplib
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -256,6 +262,47 @@ def callback(request_id, response, exception):
         print(exception)
     else:
         print("Permission Id: %s" % response.get('id'))
+
+
+@app.api_route("/send_email_without_attachment", methods=["POST"])
+def send_email_without_attachment(sender_email, sender_password, receiver_email):
+    s = smtplib.SMTP('smtp.gmail.com', 587)         # creates SMTP session
+    s.starttls()        # start TLS for security
+    s.login(sender_email, sender_password)          # Authentication
+    message = "Message_you_need_to_send"                            # message to be sent
+    s.sendmail(sender_email, receiver_email, message)     # sending the mail
+    s.quit()
+
+
+@app.api_route('/send_email_with_subject_and_attachment', methods=["POST"])
+def send_email_with_subject_and_attachment(sender_email, sender_password, receiver_email, email_subject, email_body, attachment_file_with_extension, file_path):
+
+    fromaddr = sender_email
+    toaddr = receiver_email
+
+    msg = MIMEMultipart()                # instance of MIMEMultipart
+    msg['From'] = fromaddr
+    msg['To'] = toaddr                      # storing the receivers email address
+
+    msg['Subject'] = email_subject          # storing the subject
+    body = email_body                       # string to store the body of the mail
+    msg.attach(MIMEText(body, 'plain'))         # attach the body with the msg instance
+
+    filename = attachment_file_with_extension       # open the file to be sent
+    attachment = open(file_path, "rb")
+
+    p = MIMEBase('application', 'octet-stream')     # instance of MIMEBase and named as p
+    p.set_payload((attachment).read())              # To change the payload into encoded form
+    encoders.encode_base64(p)                        # encode into base64
+    p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+    msg.attach(p)                               # attach the instance 'p' to instance 'msg'
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)             # creates SMTP session
+    s.starttls()                                    # start TLS for security
+    s.login(fromaddr, sender_password)              # Authentication
+    text = msg.as_string()                          # Converts the Multipart msg into a string
+    s.sendmail(fromaddr, toaddr, text)
+    s.quit()
 
 
 if __name__ == '__main__':
