@@ -265,12 +265,12 @@ def callback(request_id, response, exception):
 
 
 @app.api_route("/send_email_without_attachment", methods=["POST"])
-def send_email_without_attachment(sender_email, sender_password, receiver_email):
+def send_email_without_attachment(sender_email, sender_password, receiver_email, email_message):
     s = smtplib.SMTP('smtp.gmail.com', 587)         # creates SMTP session
     s.starttls()        # start TLS for security
     s.login(sender_email, sender_password)          # Authentication
-    message = "Message_you_need_to_send"                            # message to be sent
-    s.sendmail(sender_email, receiver_email, message)     # sending the mail
+    message = email_message                           # message to be sent
+    s.sendmail(sender_email, receiver_email, message)
     s.quit()
 
 
@@ -282,10 +282,10 @@ def send_email_with_subject_and_attachment(sender_email, sender_password, receiv
 
     msg = MIMEMultipart()                # instance of MIMEMultipart
     msg['From'] = fromaddr
-    msg['To'] = toaddr                      # storing the receivers email address
+    msg['To'] = toaddr
 
-    msg['Subject'] = email_subject          # storing the subject
-    body = email_body                       # string to store the body of the mail
+    msg['Subject'] = email_subject
+    body = email_body                           # string to store the body of the mail
     msg.attach(MIMEText(body, 'plain'))         # attach the body with the msg instance
 
     filename = attachment_file_with_extension       # open the file to be sent
